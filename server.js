@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const ctable = require('console.table');
 
 require('dotenv').config();
 
@@ -26,7 +25,8 @@ const promptUser = () => {
             type: 'list',
             message: 'Please select an option.',
             name: 'choices',
-            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role']
+            loop: false,
+            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'End Application']
         }
     ])
     .then((answer) => {
@@ -52,6 +52,9 @@ const promptUser = () => {
             case 'Update an employee role':
                 updateEmployee();
                 break;
+            case 'End Application':
+                connection.end();
+                break;    
             default:
                 console.log('Please select an option');
                 promptUser();                            
@@ -59,7 +62,7 @@ const promptUser = () => {
     });
 };
 
-viewDepartments = () => {
+const viewDepartments = () => {
     const dpt = `SELECT department.id AS ID, department.name AS Department FROM department`;
 
     connection.query(dpt, (err, info) => {
