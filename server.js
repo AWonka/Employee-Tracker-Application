@@ -53,6 +53,7 @@ const promptUser = () => {
                 updateEmployee();
                 break;
             case 'End Application':
+                console.log('Ending Application')
                 connection.end();
                 break;    
             default:
@@ -73,7 +74,8 @@ const viewDepartments = () => {
 };
 
 const viewRoles = () => {
-    const rls = `SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, role.department_id AS Department_ID FROM role`;
+    const rls = `SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, department.name AS Department FROM role
+    INNER JOIN department ON role.department_id = department.id`;
 
     connection.query(rls, (err, info) => {
         if (err) throw err;
@@ -81,3 +83,16 @@ const viewRoles = () => {
         promptUser();
     });
 };
+
+const viewEmployees = () => {
+    const emp = `SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Job_Title, department.name AS Department, role.salary AS Salary, CONCAT(manager.first_name, " ",manager.last_name) AS Manager FROM employee
+    INNER JOIN role ON employee.role_id = role.id
+    INNER JOIN department ON role.department_id = department.id
+    INNER JOIN employee manager ON employee.manager_id = manager.id`;
+
+    connection.query(emp, (err, info) => {
+        if (err) throw err;
+        console.table(info);
+        promptUser();
+    })
+}
