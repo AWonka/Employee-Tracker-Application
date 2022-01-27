@@ -94,5 +94,32 @@ const viewEmployees = () => {
         if (err) throw err;
         console.table(info);
         promptUser();
-    })
-}
+    });
+};
+
+const addDepartment = () => {
+    return inquirer.prompt ([
+        {
+            type: 'input',
+            message: 'Enter Department Name.',
+            name: 'name',
+            validate: name => {
+                if (!name) {
+                    console.log('Please enter a Department Name!');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    ])
+    .then(answer => {
+        const add = `INSERT INTO department (name) VALUES (?)`;
+
+        connection.query(add, answer.name, (err, input) => {
+            if (err) throw err;
+            console.log(`Added ` + answer.name + ` to the Department list.`);
+            viewDepartments();
+        });
+    });
+};
