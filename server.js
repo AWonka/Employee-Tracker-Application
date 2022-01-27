@@ -71,3 +71,13 @@ const viewDepartments = () => {
         promptUser();
     });
 };
+
+const viewRoles = () => {
+    const rls = `SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, role.department_id AS Department_ID FROM role`;
+
+    connection.query(rls, (err, info) => {
+        if (err) throw err;
+        console.table(info);
+        promptUser();
+    });
+};
