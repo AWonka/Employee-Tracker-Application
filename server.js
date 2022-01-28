@@ -114,12 +114,77 @@ const addDepartment = () => {
         }
     ])
     .then(answer => {
-        const add = `INSERT INTO department (name) VALUES (?)`;
+        const title = answer.name;
 
-        connection.query(add, answer.name, (err, input) => {
+        const add = `INSERT INTO department (name) VALUES ("${title}")`;
+
+        connection.query(add, answer.name, (err) => {
             if (err) throw err;
             console.log(`Added ` + answer.name + ` to the Department list.`);
             viewDepartments();
+        });
+    });
+};
+
+const addRole = () => {
+    return inquirer.prompt ([
+        {
+            type: 'input',
+            message: 'Enter a new Job Title.',
+            name: 'title',
+            validate: title => {
+                if (!title) {
+                    console.log('Please enter a Job Title!');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            message: 'Please enter a Salary for this Job Title.',
+            name: 'salary',
+            validate: salary => {
+                if (!salary) {
+                    console.log('Please enter a Salary for this Job Title!');
+                    return false;
+                } else if (isNaN(salary)) {
+                    console.log('Please enter a number for Salary!');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            message: 'Please enter the Department ID this Job Title is in. Select View All Departments to get the ID.',
+            name: 'dept',
+            validate: dept => {
+                if (!dept) {
+                    console.log('Please enter a Department ID for this role!');
+                    return false;
+                } else if (isNaN(dept)) {
+                    console.log('Please enter an ID Number for the Department!');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    ])
+    .then(function (answer) {
+        const title = answer.title;
+        const salary = answer.salary;
+        const dept = answer.dept;
+
+        const add = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${dept}")`;
+
+        connection.query(add, function (err) {
+            if (err) throw err;
+            console.log(`Added ` + answer.title + answer.salary + answer.dept + ` to the Roles list.`);
+            viewRoles();
         });
     });
 };
