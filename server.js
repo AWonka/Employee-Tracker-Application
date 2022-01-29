@@ -270,6 +270,55 @@ const addEmployee = () => {
                 viewEmployees();
         })
       }
-    })
-}
+    });
+};
+
+const updateEmployee = () => {
+    return inquirer.prompt ([
+        {
+            type: 'input',
+            message: "Enter the employee's ID that you wish to update. You can select View all employees to get the ID for the employee you wish to update. CTRL+C (windows) CMD+C (mac) to quit and then restart application if you need to.",
+            name: 'id',
+            validate: id => {
+                if (!id) {
+                    console.log('Please enter an ID for the employee!');
+                    return false;
+                } else if (isNaN(id)) {
+                    console.log('Please enter a number for the ID for the employee!');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            message: "Please enter a new role ID that you wish to update for the employee.",
+            name: 'role',
+            validate: role => {
+                if (!role) {
+                    console.log('Please enter an ID for the role you with to update to!');
+                    return false;
+                } else if (isNaN(role)) {
+                    console.log("Please enter a number for the ID for the role you wish to update to!");
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    ])
+    .then(function (answer) {
+        const id = answer.id;
+        const role = answer.role;
+
+        const add = `UPDATE employee SET role_id = "${role}" WHERE id = "${id}"`;
+
+        connection.query(add, function (err) {
+            if (err) throw err;
+            console.log(`Updating Employee ` + answer.id + ` to ` + answer.role + ` Successful!`);
+            viewEmployees();
+        })
+    });
+};
 
